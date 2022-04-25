@@ -1,6 +1,11 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local playerEnhancements = {}
 
+--- Adds an enhancement from player
+--- @param playerIdentifier string - Player identifier
+--- @param enhancementName string - Name of the enhancement
+--- @param time number | nil - Optional time to add or how long you want enhancement to be
+--- @return bool
 local function AddEnhancement(playerIdentifier, enhancementName, time)
     if not playerEnhancements[playerIdentifier] or not playerEnhancements[playerIdentifier][enhancementName] then
         if not time then
@@ -15,12 +20,21 @@ local function AddEnhancement(playerIdentifier, enhancementName, time)
 end
 exports('AddEnhancement', AddEnhancement)
 
+
+--- Removes an enhancement from player
+--- @param playerIdentifier string - Player identifier
+--- @param enhancementName string - Name of the enhancement
+--- @return bool
 local function RemoveEnhancement(playerIdentifier, enhancementName)
     playerEnhancements[playerIdentifier][enhancementName] = nil
     return true
 end
 exports('RemoveEnhancement', RemoveEnhancement)
 
+--- Method to fetch if player has enhancement with name and is not nil
+--- @param playerIdentifier string - Player identifier
+--- @param enhancementName string - Name of the enhancement
+--- @return bool
 local function HasEnhancement(playerIdentifier, enhancementName)
     return playerEnhancements[playerIdentifier][enhancementName] ~= nil
 end
