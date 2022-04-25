@@ -16,3 +16,21 @@ local function HasEnhancement(enhancementName)
     return enhancements[enhancementName] ~= nil
 end
 exports('HasEnhancement', HasEnhancement)
+
+--- Method to fetch enhancment details if player has enhancement active
+--- @param enhancementName string - Name of the enhancement
+--- @return table
+local function GetEnhancement(enhancementName)
+    local enhancements = GetEnhancements()
+    local time = enhancements[enhancementName]
+
+    if time ~= nil then
+        return nil
+    end
+
+    return {
+        time = time,
+        icon = Config.Enhancements[enhancementName].icon
+    }
+end
+exports('GetEnhancement',GetEnhancement)
