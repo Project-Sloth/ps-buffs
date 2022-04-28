@@ -1,8 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
-name "qb-enhancements"
-description "Enhancement tracker for qbcore"
+name "tnj-buffs"
+description "Buff tracker for qbcore"
 author "Idris"
 version "0.0.1"
 

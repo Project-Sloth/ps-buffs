@@ -1,36 +1,49 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-local function GetEnhancements()
-    local p = Promise.new()
-    QBCore.Functions.TriggerCallback('enhancements:server:fetchEnhancements', function(result)
+local function GetBuffs()
+    local p = promise.new()
+    QBCore.Functions.TriggerCallback('buffs:server:fetchBuffs', function(result)
         p:resolve(result)
     end)
     return Citizen.Await(p)
 end
 
---- Method to fetch if player has enhancement with name and is not nil
---- @param enhancementName string - Name of the enhancement
+--- Method to fetch if player has buff with name and is not nil
+--- @param buffName string - Name of the buff
 --- @return bool
-local function HasEnhancement(enhancementName)
-    local enhancements = GetEnhancements()
-    return enhancements[enhancementName] ~= nil
+local function HasBuff(buffName)
+    local buffs = GetBuffs()
+    return buffs[buffName] ~= nil
 end
-exports('HasEnhancement', HasEnhancement)
+exports('HasBuff', Hasbuff)
 
---- Method to fetch enhancment details if player has enhancement active
---- @param enhancementName string - Name of the enhancement
+--- Method to fetch buff details if player has buff active
+--- @param buffName string - Name of the buff
 --- @return table
-local function GetEnhancement(enhancementName)
-    local enhancements = GetEnhancements()
-    local time = enhancements[enhancementName]
+local function GetBuff(buffName)
+    local buffss = GetBuffs()
+    local time = buffs[buffName]
 
-    if time ~= nil then
+    if time == nil then
         return nil
     end
 
     return {
         time = time,
-        icon = Config.Enhancements[enhancementName].icon
+        icon = Config.Buffs[buffName].icon
     }
 end
-exports('GetEnhancement',GetEnhancement)
+exports('GetBuff', GetBuff)
+
+--- Method to add buff to player
+--- @param playerID string - Player identifier
+--- @param buffName string - Name of the buff
+--- @return bool - Success of removing the player buff
+local function AddBuff(buffName, time)
+    local p = promise.new()
+    QBCore.Functions.TriggerCallback('buffs:server:addBuff', function(result)
+        p:resolve(result)
+    end, buffName, time)
+    return Citizen.Await(p)
+end
+exports('AddBuff', AddBuff)
