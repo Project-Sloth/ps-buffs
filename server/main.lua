@@ -7,7 +7,7 @@ local next = next
 --- @param buffName string - Name of the buff
 --- @param time number | nil - Optional time to add or how long you want buff to be
 --- @return bool
-local function AddBuff(clientID, citizenID, buffName, time)
+local function AddBuff(sourceID, citizenID, buffName, time)
     local buffData = Config.Buffs[buffName]
     -- Check if we were given a correct buff name
     if buffData == nil then
@@ -33,7 +33,7 @@ local function AddBuff(clientID, citizenID, buffName, time)
         -- Since the player didnt already have this buff tell the front end to show it
         if buffData.type == 'buff' then
             -- Call client event to send nui to front end to start showing buff
-            TriggerClientEvent('hud:client:BuffEffect', clientID, {
+            TriggerClientEvent('hud:client:BuffEffect', sourceID, {
                 buffName = buffName,
                 display = true,
                 iconName = buffData.iconName,
@@ -43,7 +43,7 @@ local function AddBuff(clientID, citizenID, buffName, time)
             })
         else
             -- Call client event to send nui to front end to start showing enhancement
-            TriggerClientEvent('hud:client:EnhancementEffect', clientID, {
+            TriggerClientEvent('hud:client:EnhancementEffect', sourceID, {
                 display = true,    
                 enhancementName = buffName,
                 iconColor = buffData.iconColor
@@ -76,24 +76,24 @@ local function Removebuff(citizenID, buffName)
         playerBuffs[citizenID][buffName] = nil
 
         local player = QBCore.Functions.GetPlayerByCitizenId(citizenID)
-        local clientID = nil
+        local sourceID = nil
             
         if player then
-            clientID = player.PlayerData.cid
+            sourceID = player.PlayerData.source
         end
 
         -- Check if player is online
-        if clientID then
+        if sourceID then
             -- Send a nui call to front end to stop showing icon
             if buffData.type == 'buff' then
                 -- Call client event to send nui to front end to stop showing buff
-                TriggerClientEvent('hud:client:BuffEffect', clientID, {
+                TriggerClientEvent('hud:client:BuffEffect', sourceID, {
                     display = false,
                     buffName = buffName,
                 })
             else
                 -- Call client event to send nui to front end to stop showing enhancement
-                TriggerClientEvent('hud:client:EnhancementEffect', clientID, {
+                TriggerClientEvent('hud:client:EnhancementEffect', sourceID, {
                     display = false,    
                     enhancementName = buffName,
                 })
@@ -139,7 +139,7 @@ QBCore.Functions.CreateCallback('buffs:server:addBuff', function(source, cb, buf
 end)
 
 CreateThread(function()
-    local function DecrementBuff(clientID, citizenID, buffName, currentTime)
+    local function DecrementBuff(sourceID, citizenID, buffName, currentTime)
         local buffData = Config.Buffs[buffName]
         local updatedTime = currentTime - Config.TickTime
 
@@ -148,9 +148,9 @@ CreateThread(function()
             -- Only need to update buffs since they show progress on client
             if buffData.type == 'buff' then
                 -- Check if player is online
-                if clientID then
+                if sourceID then
                     -- Call client event to send nui to front end, progress at 0
-                    TriggerClientEvent('hud:client:BuffEffect', clientID, {
+                    TriggerClientEvent('hud:client:BuffEffect', sourceID, {
                         buffName = buffName,
                         progressValue = 0,
                     })
@@ -162,9 +162,9 @@ CreateThread(function()
             -- Only need to update buffs since they show progress on client
             if buffData.type == 'buff' then
                 -- Check if player is online
-                if clientID then
+                if sourceID then
                     -- Call client event to send nui to front end
-                    TriggerClientEvent('hud:client:BuffEffect', clientID, {
+                    TriggerClientEvent('hud:client:BuffEffect', sourceID, {
                         buffName = buffName,
                         -- Progress value needs to be from 0 - 100
                         progressValue = (updatedTime * 100) / buffData.maxTime,
@@ -181,14 +181,14 @@ CreateThread(function()
     while true do
         for citizenID, buffTable in pairs(playerBuffs) do
             local player = QBCore.Functions.GetPlayerByCitizenId(citizenID)
-            local clientID = nil
+            local sourceID = nil
             
             if player then
-                clientID = player.PlayerData.cid
+                sourceID = player.PlayerData.source
             end
             
             for buffName, currentTime in pairs(buffTable) do
-                DecrementBuff(clientID, citizenID, buffName, currentTime)
+                DecrementBuff(sourceID, citizenID, buffName, currentTime)
             end
         end
 
