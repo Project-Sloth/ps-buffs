@@ -13,15 +13,18 @@ end
 --- @return bool
 local function HasBuff(buffName)
     local buffs = GetBuffs()
-    return buffs[buffName] ~= nil
+    if buffs then
+        return buffs[buffName] ~= nil
+    end
+    return false
 end
-exports('HasBuff', Hasbuff)
+exports('HasBuff', HasBuff)
 
 --- Method to fetch buff details if player has buff active
 --- @param buffName string - Name of the buff
 --- @return table
 local function GetBuff(buffName)
-    local buffss = GetBuffs()
+    local buffs = GetBuffs()
     local time = buffs[buffName]
 
     if time == nil then
