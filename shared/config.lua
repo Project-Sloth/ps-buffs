@@ -29,7 +29,7 @@ Config.Buffs = {
     },
     ['luck'] = {
         iconColor = "#ffffff",
-        iconName = 'fas fa-dollarsign',
+        iconName = 'fas fa-dollar-sign',
         maxTime = 3600000,
         progressColor = "#FFD700",
         type = 'buff'
@@ -50,7 +50,7 @@ Config.Buffs = {
     },
     ['swimming'] = {
         iconColor = "#ffffff",
-        iconName = 'fas fa-personswimming',
+        iconName = 'fas fa-swimmer',
         maxTime = 3600000,
         progressColor = "#FFD700",
         type = 'buff'
