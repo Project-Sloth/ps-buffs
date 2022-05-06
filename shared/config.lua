@@ -15,21 +15,21 @@ Config.Buffs = {
     -- You are free to change the index names, but other scripts that relie on this config might need it
     ['hacking'] = {
         iconColor = "#ffffff",
-        iconName = 'fas-fa-database',
+        iconName = 'fas fa-database',
         maxTime = 3600000,
         progressColor = "#FFD700",
         type = 'buff'
     },
     ['intelligence'] = {
         iconColor = "#ffffff",
-        iconName = 'fas-fa-lightbulb',
+        iconName = 'fas fa-lightbulb',
         maxTime = 3600000,
         progressColor = "#FFD700",
         type = 'buff'
     },
     ['luck'] = {
         iconColor = "#ffffff",
-        iconName = 'fas-fa-dollarsign',
+        iconName = 'fas fa-dollarsign',
         maxTime = 3600000,
         progressColor = "#FFD700",
         type = 'buff'
@@ -43,14 +43,14 @@ Config.Buffs = {
     },
     ['strength'] = {
         iconColor = "#ffffff",
-        iconName = 'fas-fa-dumbbell',
+        iconName = 'fas fa-dumbbell',
         maxTime = 3600000,
         progressColor = "#FFD700",
         type = 'buff'
     },
     ['swimming'] = {
         iconColor = "#ffffff",
-        iconName = 'fas-fa-personswimming',
+        iconName = 'fas fa-personswimming',
         maxTime = 3600000,
         progressColor = "#FFD700",
         type = 'buff'
