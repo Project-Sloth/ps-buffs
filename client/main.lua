@@ -197,20 +197,3 @@ local function AddArmorBuff(time, value)
         end)
     end
 end exports('AddArmorBuff', AddArmorBuff)
-
-RegisterCommand("hudtesting", function()
-    local value = GetBuff("stamina")
-    if value then
-        print("Stamina time:", value.time)
-    else
-        print("No Stamina Buff")
-    end
-    print("going to call super-thirst")
-    local something = GetBuff("super-thirst")
-    print("After call super-thirst")
-    if something then
-        print("Super-Thirst time:", something.time)
-    else
-        print("No Super Thirst Buff")
-    end
-end)
