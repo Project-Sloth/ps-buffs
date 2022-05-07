@@ -25,18 +25,52 @@ exports('HasBuff', HasBuff)
 --- @return table
 local function GetBuff(buffName)
     local buffs = GetBuffs()
-    local time = buffs[buffName]
-
-    if time == nil then
+    local time = nil
+    
+    if buffs == nil then
         return nil
     end
 
-    return {
-        time = time,
-        icon = Config.Buffs[buffName].icon
-    }
+    return buffs[buffName]
 end
 exports('GetBuff', GetBuff)
+
+--- Method to fetch nui details of all buffs, used when a player that had buffs
+--- logged out and back in to the server
+--- @return table | nil
+local function GetBuffNUIData()
+    local buffs = GetBuffs()
+
+    if buffs == nil then
+        return nil
+    end
+
+    local nuiData = {}
+
+    for buffName, buffTime in pairs(buffs) do
+        local buffData = Config.Buffs[buffName]
+
+        if buffData.type == 'buff' then
+            nuiData[buffName] = {
+                buffName = buffName,
+                display = true,
+                iconName = buffData.iconName,
+                iconColor = buffData.iconColor,
+                progressColor = buffData.progressColor,
+                progressValue = (buffTime * 100) / buffData.maxTime,
+            }
+        else
+            nuiData[buffName] = {
+                display = true,    
+                enhancementName = buffName,
+                iconColor = buffData.iconColor
+            }
+        end
+    end
+
+    return nuiData
+end
+exports('GetBuffNUIData', GetBuffNUIData)
 
 --- Method to add buff to player
 --- @param playerID string - Player identifier

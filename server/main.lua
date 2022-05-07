@@ -77,7 +77,7 @@ local function Removebuff(citizenID, buffName)
 
         local player = QBCore.Functions.GetPlayerByCitizenId(citizenID)
         local sourceID = nil
-            
+
         if player then
             sourceID = player.PlayerData.source
         end
@@ -99,7 +99,7 @@ local function Removebuff(citizenID, buffName)
                 })
             end
         end
-        
+
         -- Check to see if that was the player's last buff
         -- If so, then remove the player from the table to ensure we dont loop them
         if next(playerBuffs[citizenID]) == nil then
