@@ -1,6 +1,9 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
 local function GetBuffs()
+    -- If making multiple calls to GetBuffs we dont get a result of the 2nd call
+    -- The wait seems to fix the issue
+    Wait(1)
     local p = promise.new()
     QBCore.Functions.TriggerCallback('buffs:server:fetchBuffs', function(result)
         p:resolve(result)
@@ -17,23 +20,48 @@ local function HasBuff(buffName)
         return buffs[buffName] ~= nil
     end
     return false
-end
-exports('HasBuff', HasBuff)
+end exports('HasBuff', HasBuff)
 
 --- Method to fetch buff details if player has buff active
 --- @param buffName string - Name of the buff
 --- @return table
 local function GetBuff(buffName)
-    local buffs = GetBuffs()
-    local time = nil
-    
-    if buffs == nil then
+    local buffData = Config.Buffs[buffName]
+    -- Check if we were given a correct buff name
+    if buffData == nil then
         return nil
     end
 
-    return buffs[buffName]
-end
-exports('GetBuff', GetBuff)
+    local buffs = GetBuffs()
+    local time = nil
+    
+    if buffs then
+        time = buffs[buffName]
+    end
+
+    if time == nil then
+        time = 0
+    end
+
+    if buffData.type == 'buff' then
+        return {
+            time = time,
+            buffName = buffName,
+            iconName = buffData.iconName,
+            iconColor = buffData.iconColor,
+            progressColor = buffData.progressColor,
+            progressValue = (time * 100) / buffData.maxTime,
+            type = buffData.type,
+        }
+    else
+        return {
+            time = time,
+            iconColor = buffData.iconColor,
+            maxTime = buffData.maxTime,
+            type = buffData.type,
+        }
+    end
+end exports('GetBuff', GetBuff)
 
 --- Method to fetch nui details of all buffs, used when a player that had buffs
 --- logged out and back in to the server
@@ -69,8 +97,7 @@ local function GetBuffNUIData()
     end
 
     return nuiData
-end
-exports('GetBuffNUIData', GetBuffNUIData)
+end exports('GetBuffNUIData', GetBuffNUIData)
 
 --- Method to add buff to player
 --- @param playerID string - Player identifier
@@ -82,5 +109,108 @@ local function AddBuff(buffName, time)
         p:resolve(result)
     end, buffName, time)
     return Citizen.Await(p)
-end
-exports('AddBuff', AddBuff)
+end exports('AddBuff', AddBuff)
+
+
+
+
+--- Custom Buffs, edit to your liking ---
+
+--- Method to add stamina buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of speed boost the player will recieve
+local hasStaminaBuffActive = false
+local function StaminaBuffEffect(time, value)
+    AddBuff("stamina", time)
+    if not hasStaminaBuffActive then 
+        hasStaminaBuffActive = true
+        CreateThread(function()
+            SetRunSprintMultiplierForPlayer(PlayerId(), value)
+            while exports['tnj-buffs']:HasBuff("stamina") do
+                Wait(500)
+                SetPlayerStamina(PlayerId(), GetPlayerStamina(PlayerId()) + math.random(1,10))
+            end
+            SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+            hasStaminaBuffActive = false
+        end)
+    end
+end exports('StaminaBuffEffect', StaminaBuffEffect)
+
+--- Method to add swimming buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of swimming speed boost the player will recieve
+local hasSwimmingBuffActive = false
+local function SwimmingBuffEffect(time, value)
+    AddBuff("swimming", time)
+    if not hasSwimmingBuffActive then 
+        hasSwimmingBuffActive = true
+        CreateThread(function()
+            SetSwimMultiplierForPlayer(PlayerId(), value)
+            while exports['tnj-buffs']:HasBuff("swimming") do
+                Wait(500)
+                SetPlayerStamina(PlayerId(), GetPlayerStamina(PlayerId()) + math.random(1,10))
+            end
+            SetSwimMultiplierForPlayer(PlayerId(), 1.0)
+            hasSwimmingBuffActive = false
+        end)
+    end
+end exports('SwimmingBuffEffect', SwimmingBuffEffect)
+
+--- Method to add health buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of HP the player will gain over time
+
+local hasHealthBuffActive = false
+local function AddHealthBuff(time, value)
+    AddBuff("super-health", time)
+    if not hasHealthBuffActive then
+        hasHealthBuffActive = true
+        CreateThread(function()
+            while HasBuff("super-health") do
+                Wait(5000)
+                if GetEntityHealth(PlayerPedId()) < 200 then
+                    SetEntityHealth(PlayerPedId(), GetEntityHealth(PlayerPedId()) + value)
+                end
+            end
+            hasHealthBuffActive = false
+        end)
+    end
+end exports('AddHealthBuff', AddHealthBuff)
+
+--- Method to add armor buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of Armor the player will gain over time
+
+local hasArmorBuffActive = false
+local function AddArmorBuff(time, value)
+    AddBuff("super-armor", time)
+    if not hasArmorBuffActive then
+        hasArmorBuffActive = true
+        CreateThread(function()
+            while HasBuff("super-armor") do
+                Wait(5000)
+                if GetPedArmour(PlayerPedId()) < 100 then
+                    SetPedArmour(PlayerPedId(), GetPedArmour(PlayerPedId()) + value)
+                end
+            end
+            hasArmorBuffActive = false
+        end)
+    end
+end exports('AddArmorBuff', AddArmorBuff)
+
+RegisterCommand("hudtesting", function()
+    local value = GetBuff("stamina")
+    if value then
+        print("Stamina time:", value.time)
+    else
+        print("No Stamina Buff")
+    end
+    print("going to call super-thirst")
+    local something = GetBuff("super-thirst")
+    print("After call super-thirst")
+    if something then
+        print("Super-Thirst time:", something.time)
+    else
+        print("No Super Thirst Buff")
+    end
+end)

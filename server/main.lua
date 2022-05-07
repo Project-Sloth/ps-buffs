@@ -62,8 +62,7 @@ local function AddBuff(sourceID, citizenID, buffName, time)
     end
 
     return true
-end
-exports('AddBuff', AddBuff)
+end exports('AddBuff', AddBuff)
 
 --- Removes a buff from provided player
 --- @param citizenID string - Player identifier
@@ -110,8 +109,7 @@ local function Removebuff(citizenID, buffName)
     end
 
     return false
-end
-exports('RemoveBuff', RemoveBuff)
+end exports('RemoveBuff', RemoveBuff)
 
 --- Method to fetch if player has buff with name and is not nil
 --- @param citizenID string - Player identifier
@@ -123,8 +121,7 @@ local function HasBuff(citizenID, buffName)
     end
 
     return false
-end
-exports('HasBuff', HasBuff)
+end exports('HasBuff', HasBuff)
 
 QBCore.Functions.CreateCallback('buffs:server:fetchBuffs', function(source, cb)
     local player = QBCore.Functions.GetPlayer(source)
