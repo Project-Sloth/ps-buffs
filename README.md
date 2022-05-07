@@ -1,19 +1,18 @@
 # TNJ-Buffs
 
-<br/>
 
 ## Setup Guide
 ### General Information
-***
+___
 - Buffs are new effects that a player can get. Example: Stamina Buff makes a player run faster.
   - They show up as a new icon
 - Enhancements are making statuses you already have better. Example: Health Buff heals a player periodically
   - They show up as yellow on the status they are affecting. Example: Armor buffs makes the armor icon yellow
 
-<br/>
+<br>
 
 ### Buff Effects
-***
+___
 - We currently have the following buff effects you can call:
   - Stamina Buff - Makes a player run faster and generate a random partial amount of stamina
     - ```lua
@@ -48,10 +47,8 @@
       exports['tnj-buffs']:AddArmorBuff(30000, 10)
       ```
 
-<br/>
-<br/>
+<br>
 
 ## Credits
-___
 - The majority of the lua code comes from [qb-enhancements](https://github.com/IdrisDose/qb-enhancements) by [IdrisDose](https://github.com/IdrisDose)
 - Credits to my boys Silent, Snipe OP Gaming and fjamzoo for help with getting things in place for this to all be possible
