@@ -1,0 +1,202 @@
+CREDITS: SNIPE OP GAMING AND FJAMZOO 
+
+--SOME SNIPPETS TO GO INTO PS-BUFFS/CLIENT LUA------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+HEALTH AND ARMOR----
+--- Method to add health buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of HP the player will gain over time
+
+local hasHealthBuffActive = false
+local function AddHealthBuff(time, value)
+    AddBuff("super-health", time)
+    if not hasHealthBuffActive then
+        hasHealthBuffActive = true
+        CreateThread(function()
+            while HasBuff("super-health") do
+                Wait(5000)
+                if GetEntityHealth(PlayerPedId()) < 200 then
+                    SetEntityHealth(PlayerPedId(), GetEntityHealth(PlayerPedId()) + value)
+                end
+            end
+            hasHealthBuffActive = false
+        end)
+    end
+end exports('AddHealthBuff', AddHealthBuff)
+
+--- Method to add armor buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of Armor the player will gain over time
+
+local hasArmorBuffActive = false
+local function AddArmorBuff(time, value)
+    AddBuff("super-armor", time)
+    if not hasArmorBuffActive then
+        hasArmorBuffActive = true
+        CreateThread(function()
+            while HasBuff("super-armor") do
+                Wait(5000)
+                if GetPedArmour(PlayerPedId()) < 100 then
+                    SetPedArmour(PlayerPedId(), GetPedArmour(PlayerPedId()) + value)
+                end
+            end
+            hasArmorBuffActive = false
+        end)
+    end
+end exports('AddArmorBuff', AddArmorBuff)
+
+RegisterCommand("stambuff", function()
+    AddHealthBuff(50000, math.random(1,5))
+    Wait(1000)
+    AddArmorBuff(50000, math.random(1,5))
+end)
+
+
+exports["ps-buffs"]:AddHealthBuff(time in ms, buff amoount)
+exports["ps-buffs"]:AddArmorBuff(time in ms, buff amoount)
+
+
+
+
+
+
+ 
+ STAMINA BUFF-- 
+--- Method to add stamina buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of speed boost the player will recieve
+local hasStaminaBuffActive = false
+local function StaminaBuffEffect(time, value)
+    AddBuff("stamina", time)
+    if not hasStaminaBuffActive then 
+        hasStaminaBuffActive = true
+        CreateThread(function()
+            SetRunSprintMultiplierForPlayer(PlayerId(), value)
+            while exports['ps-buffs']:HasBuff("stamina") do
+                Wait(500)
+                SetPlayerStamina(PlayerId(), GetPlayerStamina(PlayerId()) + math.random(1,10))
+            end
+            SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+            hasStaminaBuffActive = false
+        end)
+    end
+end exports('StaminaBuffEffect', StaminaBuffEffect)
+
+
+exports["ps-buffs"]:StaminaBuffEffect(time in ms, buff amoount)
+
+
+Stamina buff with values like time and buff amount
+
+
+
+
+
+
+ SWIMMING BUFF 
+
+--- Method to add swimming buff to player
+--- @param time  - Time in ms the health buff will be active
+--- @param value - The amount of swimming speed boost the player will recieve
+local hasSwimmingBuffActive = false
+local function SwimmingBuffEffect(time, value)
+    AddBuff("swimming", time)
+    if not hasSwimmingBuffActive then 
+        hasSwimmingBuffActive = true
+        CreateThread(function()
+            SetSwimMultiplierForPlayer(PlayerId(), value)
+            while exports['ps-buffs']:HasBuff("swimming") do
+                Wait(500)
+                SetPlayerStamina(PlayerId(), GetPlayerStamina(PlayerId()) + math.random(1,10))
+            end
+            SetSwimMultiplierForPlayer(PlayerId(), 1.0)
+            hasSwimmingBuffActive = false
+        end)
+    end
+end exports('SwimmingBuffEffect', SwimmingBuffEffect)
+
+
+exports["ps-buffs"]:SwimmingBuffEffect(time in ms, buff ammount)
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Hunger and Thirst Buff!!
+Notes. You need to replace the following snippets in core. Do not ADD
+
+If you add this block of code instead of replacing, you will get error In server console with hungerRate is nil or thirstRate is nil!
+
+--------------qb-core/client/loops.lua---------------------------------------------------------------------------
+CreateThread(function()
+    while true do
+        local sleep = 0
+        if LocalPlayer.state.isLoggedIn then
+            sleep = (1000 * 60) * QBCore.Config.UpdateInterval
+            local hungerRate = 0
+            local thirstRate = 0
+            if exports["ps-buffs"]:HasBuff("super-hunger") then hungerRate = QBCore.Config.Player.HungerRate/2 else hungerRate = QBCore.Config.Player.HungerRate end
+            if exports["ps-buffs"]:HasBuff("super-thirst") then thirstRate = QBCore.Config.Player.ThirstRate/2 else thirstRate = QBCore.Config.Player.ThirstRate end
+            TriggerServerEvent('QBCore:UpdatePlayer', hungerRate, thirstRate)
+        end
+        Wait(sleep)
+    end
+end)
+--
+--
+--
+--
+--
+--
+--
+
+qb-core/server/events.lua - Replace the event with this new event--------------------------------------------------------
+RegisterNetEvent('QBCore:UpdatePlayer', function(hungerRate, thirstRate)
+    print('Updating Player', hungerRate, thirstRate)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    local newHunger = Player.PlayerData.metadata['hunger'] - hungerRate
+    local newThirst = Player.PlayerData.metadata['thirst'] - thirstRate
+    if newHunger <= 0 then
+        newHunger = 0
+    end
+    if newThirst <= 0 then
+        newThirst = 0
+    end
+    Player.Functions.SetMetaData('thirst', newThirst)
+    Player.Functions.SetMetaData('hunger', newHunger)
+    TriggerClientEvent('hud:client:UpdateNeeds', src, newHunger, newThirst)
+    Player.Functions.Save()
+end)
+
+--
+--
+--
+--
+--
+--
+--
+
+
+
+
+Replace this in qb-core/client/events.lua---------------------------------------------------------------------------------------------
+RegisterNetEvent('QBCore:Player:UpdatePlayerData', function()
+    local hungerRate = 0
+    local thirstRate = 0
+    if exports["ps-buffs"]:HasBuff("super-hunger") then hungerRate = QBCore.Config.Player.HungerRate/2 else hungerRate = QBCore.Config.Player.HungerRate end
+    if exports["ps-buffs"]:HasBuff("super-thirst") then thirstRate = QBCore.Config.Player.ThirstRate/2 else thirstRate = QBCore.Config.Player.ThirstRate end
+    TriggerServerEvent('QBCore:UpdatePlayer', hungerRate, thirstRate)
+end)
+
+--
+--
+--
+--
+--
+--
+--
