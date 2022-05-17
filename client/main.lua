@@ -126,7 +126,7 @@ local function StaminaBuffEffect(time, value)
         hasStaminaBuffActive = true
         CreateThread(function()
             SetRunSprintMultiplierForPlayer(PlayerId(), value)
-            while exports['tnj-buffs']:HasBuff("stamina") do
+            while exports['ps-buffs']:HasBuff("stamina") do
                 Wait(500)
                 SetPlayerStamina(PlayerId(), GetPlayerStamina(PlayerId()) + math.random(1,10))
             end
@@ -146,7 +146,7 @@ local function SwimmingBuffEffect(time, value)
         hasSwimmingBuffActive = true
         CreateThread(function()
             SetSwimMultiplierForPlayer(PlayerId(), value)
-            while exports['tnj-buffs']:HasBuff("swimming") do
+            while exports['ps-buffs']:HasBuff("swimming") do
                 Wait(500)
                 SetPlayerStamina(PlayerId(), GetPlayerStamina(PlayerId()) + math.random(1,10))
             end
