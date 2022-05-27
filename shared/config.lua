@@ -77,5 +77,10 @@ Config.Buffs = {
         maxTime = 3600000,
         iconColor = '#FDE829',
         type = 'enhancement',
+    },
+    ['super-stress'] = {
+        maxTime = 3600000,
+        iconColor = '#FDE829',
+        type = 'enhancement',
     }
 }

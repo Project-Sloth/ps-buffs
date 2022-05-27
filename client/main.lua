@@ -197,3 +197,18 @@ local function AddArmorBuff(time, value)
         end)
     end
 end exports('AddArmorBuff', AddArmorBuff)
+
+local hasStressBuffActive = false
+local function AddStressBuff(time, value)
+    AddBuff("super-stress", time)
+    if not hasStressBuffActive then
+        hasStressBuffActive = true
+        CreateThread(function()
+            while HasBuff("super-stress") do
+                Wait(5000)
+                TriggerServerEvent("hud:server:RelieveStress", 1)
+            end
+            hasStressBuffActive = false
+        end)
+    end
+end exports('AddStressBuff', AddStressBuff)
