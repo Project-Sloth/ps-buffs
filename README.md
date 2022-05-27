@@ -79,9 +79,16 @@ end
     -- Example -- Adds a armor buff for 30 seconds and a player periodically gains 10 armor.
     exports['ps-buffs']:AddArmorBuff(30000, 10)
     ```
-
+  - Stress Buff - Makes a player's stress partially decrease periodically
+    ```lua
+    -- Function signature - time: int (1 second = 1000), value: int
+    exports['ps-buffs']:AddStressBuff(time, value)
+    
+    -- Example -- Removes stress for 30 seconds and removes 10 units every 5 seconds
+    exports['ps-buffs']:AddStressBuff(30000, 10)
+    ```
 <br>
 
 ## Credits
 - The majority of the lua code comes from [qb-enhancements](https://github.com/IdrisDose/qb-enhancements) by [IdrisDose](https://github.com/IdrisDose)
-- Credits to my boys Silent, Snipe OP Gaming and fjamzoo for help with getting things in place for this to all be possible
+- Credits to my boys Silent, Snipe and fjamzoo for help with getting things in place for this to all be possible

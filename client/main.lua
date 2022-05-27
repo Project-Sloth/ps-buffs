@@ -198,6 +198,9 @@ local function AddArmorBuff(time, value)
     end
 end exports('AddArmorBuff', AddArmorBuff)
 
+--- Method to add stress buff to player
+--- @param time  - Time in ms the stress buff will be active
+--- @param value - The amount of stress the player will lose every 5 seconds
 local hasStressBuffActive = false
 local function AddStressBuff(time, value)
     AddBuff("super-stress", time)
@@ -206,7 +209,7 @@ local function AddStressBuff(time, value)
         CreateThread(function()
             while HasBuff("super-stress") do
                 Wait(5000)
-                TriggerServerEvent("hud:server:RelieveStress", 1)
+                TriggerServerEvent("hud:server:RelieveStress", value)
             end
             hasStressBuffActive = false
         end)
