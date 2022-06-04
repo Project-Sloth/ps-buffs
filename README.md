@@ -1,11 +1,10 @@
 # ps-buffs
 
-
-## Setup Guide
+### Dependencies
+***
+- PS-Hud: https://github.com/Project-Sloth/ps-hud
 ### General Information
 ***
-<br/>
-
 - Buffs are new effects that a player can get. Example: Stamina Buff makes a player run faster.
   - They show up as a new icon
 
@@ -17,8 +16,6 @@
 
 - Avaliable buffs you can pick from are in the config file (shared/config.lua)
 
-<br/>
-
 ### Add a buff to a player
 ```lua
 -- Function signature - buffName: string, time: int (1 second = 1000)
@@ -27,8 +24,6 @@ exports['ps-buffs']:AddBuff(buffName, time)
 -- Example -- Adds a hacking buff for 15 seconds, which the player would see a hacking buff icon on their screen
 exports['ps-buffs']:AddBuff("hacking", 15000)
 ```
-
-<br/>
 
 ### Check if player has a buff
 ```lua
@@ -40,11 +35,9 @@ if exports['ps-buffs']:HasBuff("hacking") then
     -- give player more time or less complicated puzzle
 end
 ```
-<br/>
 
 ### Buff Effects
 ***
-<br/>
 
 - We currently have the following buff effects implemented that you can call:
   - Stamina Buff - Makes a player run faster and generate a random partial amount of stamina
@@ -87,7 +80,6 @@ end
     -- Example -- Removes stress for 30 seconds and removes 10 units every 5 seconds
     exports['ps-buffs']:AddStressBuff(30000, 10)
     ```
-<br>
 
 ## Credits
 - The majority of the lua code comes from [qb-enhancements](https://github.com/IdrisDose/qb-enhancements) by [IdrisDose](https://github.com/IdrisDose)
