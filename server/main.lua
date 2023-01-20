@@ -125,12 +125,14 @@ end exports('HasBuff', HasBuff)
 
 QBCore.Functions.CreateCallback('buffs:server:fetchBuffs', function(source, cb)
     local player = QBCore.Functions.GetPlayer(source)
+    if not player then return end
     local citizenID = player.PlayerData.citizenid
     cb(playerBuffs[citizenID])
 end)
 
 QBCore.Functions.CreateCallback('buffs:server:addBuff', function(source, cb, buffName, time)
     local player = QBCore.Functions.GetPlayer(source)
+    if not player then return end
     local citizenID = player.PlayerData.citizenid
     cb(AddBuff(source, citizenID, buffName, time))
 end)
