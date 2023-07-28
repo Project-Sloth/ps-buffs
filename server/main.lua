@@ -68,7 +68,7 @@ end exports('AddBuff', AddBuff)
 --- @param citizenID string - Player identifier
 --- @param buffName string - Name of the buff
 --- @return bool - Success of removing the player buff
-local function Removebuff(citizenID, buffName)
+local function RemoveBuff(citizenID, buffName)
     local buffData = Config.Buffs[buffName]
     if playerBuffs[citizenID] and playerBuffs[citizenID][buffName] then
         
