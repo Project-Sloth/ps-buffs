@@ -153,7 +153,7 @@ CreateThread(function()
                     })
                 end
             end
-            Removebuff(citizenID, buffName)
+            RemoveBuff(citizenID, buffName)
         else
             playerBuffs[citizenID][buffName] = updatedTime
             -- Only need to update buffs since they show progress on client
